@@ -14,7 +14,7 @@ TEST(NginxConfigParserTest, SimpleConfig) {
 }
 
 // foo bar;
-TEST(NginxConfigTest, ToString) {
+TEST(NginxConfigStatementTest, ToString) {
 	NginxConfigStatement statement;
 	statement.tokens_.push_back("foo");
 	statement.tokens_.push_back("bar");
@@ -38,11 +38,34 @@ TEST_F(NginxStringConfigTest, AnotherSimpleConfig) {
 	EXPECT_EQ("foo", out_config_.statements_.at(0)->tokens_.at(0));
 }
 
+TEST_F(NginxStringConfigTest, MultiStatementSimpleConfig) {
+    EXPECT_TRUE(ParseString("foo bar;abc def;"));
+    EXPECT_EQ(2, out_config_.statements_.size())
+    << "Config has two statements";
+    EXPECT_EQ("abc", out_config_.statements_.at(1)->tokens_.at(0));
+}
+
 TEST_F(NginxStringConfigTest, InvalidConfig) {
 	EXPECT_FALSE(ParseString("foo bar"));
 }
 
 TEST_F(NginxStringConfigTest, NestedConfig) {
 	EXPECT_TRUE(ParseString("server { listen 80; }"));
-	// TODO: Test the contents of out_config_;
+}
+
+TEST_F(NginxStringConfigTest, UnmatchedBeginBraceConfig) { // failed test in original
+    EXPECT_FALSE(ParseString("server { listen 80; "));
+}
+
+TEST_F(NginxStringConfigTest, UnmatchedEndBraceConfig) { // failed test in original
+    EXPECT_FALSE(ParseString("abc def; }"));
+}
+
+
+TEST_F(NginxStringConfigTest, DoublyNestedConfig) { // failed test in original
+    EXPECT_TRUE(ParseString("test_nested { server { listen 80; } }"));
+}
+
+TEST_F(NginxStringConfigTest, DoublyNestedUnmatchedConfig) { // failed test in original
+    EXPECT_FALSE(ParseString("test_nested { extra { server { listen 80; } }"));
 }
