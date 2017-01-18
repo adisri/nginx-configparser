@@ -1,6 +1,5 @@
 #include <sstream>
 #include <string>
-
 #include "gtest/gtest.h"
 #include "config_parser.h"
 
@@ -48,7 +47,6 @@ TEST_F(NginxStringConfigTest, UnmatchedBeginBraceConfig) { // failed test in ori
 TEST_F(NginxStringConfigTest, UnmatchedEndBraceConfig) { // failed test in original
     EXPECT_FALSE(ParseString("abc def; }"));
 }
-
 
 TEST_F(NginxStringConfigTest, DoublyNestedConfig) { // failed test in original
     EXPECT_TRUE(ParseString("test_nested { server { listen 80; } }"));
