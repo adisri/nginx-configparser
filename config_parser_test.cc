@@ -4,16 +4,6 @@
 #include "gtest/gtest.h"
 #include "config_parser.h"
 
-TEST(NginxConfigParserTest, SimpleConfig) {
-  NginxConfigParser parser;
-  NginxConfig out_config;
-
-  bool success = parser.Parse("example_config", &out_config);
-
-  EXPECT_TRUE(success);
-}
-
-// foo bar;
 TEST(NginxConfigStatementTest, ToString) {
 	NginxConfigStatement statement;
 	statement.tokens_.push_back("foo");
@@ -31,17 +21,15 @@ protected:
 	NginxConfig out_config_;
 };
 
-TEST_F(NginxStringConfigTest, AnotherSimpleConfig) {
+TEST_F(NginxStringConfigTest, SimpleConfig) {
 	EXPECT_TRUE(ParseString("foo bar;"));
-	EXPECT_EQ(1, out_config_.statements_.size())
-		<< "Config has one statements";
+	EXPECT_EQ(1, out_config_.statements_.size());
 	EXPECT_EQ("foo", out_config_.statements_.at(0)->tokens_.at(0));
 }
 
-TEST_F(NginxStringConfigTest, MultiStatementSimpleConfig) {
+TEST_F(NginxStringConfigTest, MultiStatementConfig) {
     EXPECT_TRUE(ParseString("foo bar;abc def;"));
-    EXPECT_EQ(2, out_config_.statements_.size())
-    << "Config has two statements";
+    EXPECT_EQ(2, out_config_.statements_.size());
     EXPECT_EQ("abc", out_config_.statements_.at(1)->tokens_.at(0));
 }
 
